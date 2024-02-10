@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: "n8n"
+    restart: always
+    ports:
+      - "127.0.0.1:5678:5678"
+    environment:
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - N8N_SSL_KEY=/certs/key.key
+      - N8N_SSL_CERT=/certs/cert.crt
+      - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./certs/:/certs/:ro
+
+  fastapi_server:
+    image: fastapi
+    container_name: "fastapi"
+    restart: always
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - n8n
+    environment:
+      - N8N_BASE_URL=https://localhost:5678/
+    command: uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload --log-level debug
+    volumes:
+      - ./server/app:/code/app
+
+  web_app:
+    container_name: "web_app"
+    restart: always
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      - fastapi_server
+    environment:
+      - VITE_N8N_BASE_URL=https://localhost:5678/
+    command: sh -c "npm run dev"
+    volumes:
+      - ./web/src:/code/src
+      - /code/node_modules
+
+volumes:
+  n8n_data:
+    external: true

@@ -1,0 +1,40 @@
+{
+  "name": "ai-summary",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "rimraf dev-dist && SW_DEV=true vite --force",
+    "start": "vite serve",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.15.9",
+    "firebase": "^10.7.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router": "^6.19.0",
+    "react-router-config": "^5.1.1",
+    "react-router-dom": "^6.19.0"
+  },
+  "devDependencies": {
+    "@types/material-ui": "0.21.16",
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "@types/react-router-config": "^5.0.11",
+    "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-basic-ssl": "^1.1.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "https-localhost": "^4.7.1",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.0",
+    "vite-plugin-pwa": "^0.17.5",
+    "workbox-core": "^7.0.0",
+    "workbox-precaching": "^7.0.0",
+    "workbox-routing": "^7.0.0",
+    "workbox-window": "^7.0.0"
+  }
+}
