@@ -2,7 +2,7 @@ import os
 
 from app.model.summary import retrieve_summary, store_summary
 from app.model.transcript import retrieve_transcript, store_transcript
-from app.summarization.model import get_model_list
+from app.summarization.config import get_model_list
 from audio.download import download_audio
 from dotenv import load_dotenv
 from fastapi import APIRouter, FastAPI, HTTPException, status
@@ -48,7 +48,7 @@ class SummarizeRequest(BaseModel):
     video_title: str
     video_id: str
     transcription: str
-    model: str | None
+    model: str
 
 
 @router.get("/")
@@ -58,7 +58,7 @@ def get_root():
 
 @router.get("/models", status_code=status.HTTP_200_OK)
 def get_models():
-    return {"models": get_model_list()}
+    return {"models": list(get_model_list())}
 
 
 @router.get("/summary/{video_id}/{model}", status_code=status.HTTP_200_OK)

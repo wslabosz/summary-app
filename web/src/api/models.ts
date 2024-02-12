@@ -1,21 +1,15 @@
 import axios, { AxiosResponse } from "axios";
 
-export type SummaryResponse = {
-  videoId: string;
-  videoTitle: string;
-  dateCreated: string;
-  summary: string;
-  model: string;
+export type ModelResponse = {
+  models: string[];
 };
 
-export async function getSummary(
-  videoId: string,
-  model: string,
+export async function getModels(
   baseURL: string = import.meta.env.VITE_API_BASE_URL
-): Promise<SummaryResponse | undefined> {
+): Promise<ModelResponse | undefined> {
   try {
-    const response: AxiosResponse<SummaryResponse> = await axios.get(
-      `${baseURL}summary/${videoId}/${model}`,
+    const response: AxiosResponse<ModelResponse> = await axios.get(
+      `${baseURL}models`,
       {
         headers: {
           "content-type": "application/json",

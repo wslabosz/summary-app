@@ -18,7 +18,6 @@ services:
       - ./certs/:/certs/:ro
       
   fastapi_server:
-    image: fastapi
     container_name: "fastapi"
     restart: always
     build:
@@ -30,6 +29,8 @@ services:
       - n8n
     environment:
       - N8N_BASE_URL=https://localhost:5678/
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - HF_API_KEY=${HF_API_KEY}
     command: uvicorn app.main:app --host 0.0.0.0 --port 5000 --ssl-keyfile certs/localhost-key.pem --ssl-certfile certs/localhost-cert.pem --reload --log-level debug
     volumes:
       - ./server/app:/code/app
@@ -45,8 +46,10 @@ services:
     depends_on:
       - fastapi_server
     environment:
-      - VITE_N8N_BASE_URL=https://localhost:5678/
+      - SW_DEV=true
       - VITE_API_BASE_URL=https://localhost:5000/
+      - VITE_N8N_BASE_URL=https://localhost:5678/
+      - VITE_FIREBASE_VAPID_KEY=${VITE_FIREBASE_VAPID_KEY}
     command: sh -c "npm run dev"
     volumes:
       - ./web/src:/code/src

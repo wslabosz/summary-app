@@ -10,6 +10,8 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     loader: Loader,
+    id: "root",
+    shouldRevalidate: () => false,
     children: [
       {
         path: "/video",

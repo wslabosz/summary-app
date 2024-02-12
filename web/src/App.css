@@ -34,10 +34,20 @@
 
 #titleBar > input {
   flex: 1;
-  margin: 0.5em;
+  margin: 0.7em;
   border-radius: 0.4em;
   border: none;
   padding: 0.5em;
+  align-self: center;
+
+  font-weight: 600;
+}
+
+#titleBar > .MuiFormControl-root {
+  justify-content: center;
+  align-self: center;
+  flex: 0.2;
+  margin: 1em;
 }
 
 .App {

@@ -4,9 +4,8 @@ import { useNavigate } from "react-router";
 
 export const AppBar = () => {
   const navigate = useNavigate();
-
   const handleHomeClick = () => {
-    navigate("/");
+    navigate(`/`);
   };
 
   const handleSubmitEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -27,12 +26,16 @@ export const AppBar = () => {
   return (
     <div id="titleBarContainer">
       <div id="titleBar" className="draggable">
-        <IconButton aria-label="redirect home" onClick={handleHomeClick}>
+        <IconButton
+          sx={{ pl: "0.5em" }}
+          aria-label="redirect home"
+          onClick={handleHomeClick}
+        >
           <HomeIcon />
         </IconButton>
         <Typography
           m="auto"
-          p="0 0.8em"
+          p="0 0.5em"
           className="draggable"
           variant="inherit"
         >

@@ -27,4 +27,4 @@ if __name__ == "__main__":
     #     )
     # ) as f:
     #     transcription = f.read()
-    print(summarize(transcription))
+    print(summarize(transcription, "mistral"))
