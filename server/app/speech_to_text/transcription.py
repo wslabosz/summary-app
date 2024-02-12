@@ -20,6 +20,7 @@ model_lock = Lock()
 def transcribe(
     audio,
 ):
+    print("Transcribing audio...")
     start_time = time.time()
     with model_lock:
         segments = []

@@ -1,18 +1,24 @@
-import { Typography } from "@mui/material";
+import HomeIcon from "@mui/icons-material/Home";
+import { IconButton, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
 
 export const AppBar = () => {
   const navigate = useNavigate();
+
+  const handleHomeClick = () => {
+    navigate("/");
+  };
 
   const handleSubmitEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       const url = (document.getElementById("videoUrlInput") as HTMLInputElement)
         .value;
       if (url) {
-        navigate(`/video?url=${url}`);
-        // if valid URL, navigate to /video?url={url}
+        // TODO: check if valid yt url
+        const videoId = url.split("watch?v=")[1];
+        navigate(`/video/${videoId}`);
       } else {
-        // show error response
+        // TODO: show error response
         console.log("Invalid URL");
       }
     }
@@ -21,9 +27,12 @@ export const AppBar = () => {
   return (
     <div id="titleBarContainer">
       <div id="titleBar" className="draggable">
+        <IconButton aria-label="redirect home" onClick={handleHomeClick}>
+          <HomeIcon />
+        </IconButton>
         <Typography
           m="auto"
-          p="0 1.5em"
+          p="0 0.8em"
           className="draggable"
           variant="inherit"
         >
@@ -34,7 +43,7 @@ export const AppBar = () => {
           className="nonDraggable"
           type="text"
           placeholder="Video URL to summarize"
-          onKeyDown={(e) => handleSubmitEnter(e)}
+          onKeyDown={handleSubmitEnter}
         />
       </div>
     </div>

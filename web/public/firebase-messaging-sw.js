@@ -18,24 +18,48 @@ var FIREBASE_CONFIG = {
 firebase.initializeApp(FIREBASE_CONFIG);
 const messaging = firebase.messaging();
 
+// TODO: add on message to focus window
 messaging.onBackgroundMessage(async (payload) => {
-  console.log(
-    "[firebase-messaging-sw.js] Received background message ",
-    payload
-  );
-  // Customize notification here
-  const notificationTitle = "Background Message Title";
-  const notificationOptions = {
-    body: "Background Message body.",
-    // when deployed it doesn't work
-    icon: "/pwa-192x192.png",
-  };
+  const [videoId, notificationBody] = payload.notification.body.split("|");
 
   self.registration.showNotification(
-    payload.notification.title ?? "Random notification",
+    payload.notification.title ?? "Notification title",
     {
-      body: payload.notification.body ?? "Random notification body",
-      icon: notificationOptions.icon,
+      body: notificationBody ?? "Notification body",
+      icon: payload.notification.icon ?? "/pwa-192x192.png",
+      data: {
+        videoId,
+      },
     }
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  const videoId = event.notification.data.videoId;
+  // This looks to see if the current is already open and
+  // focuses if it is
+  event.waitUntil(
+    clients
+      .matchAll({
+        type: "window",
+        includeUncontrolled: true,
+      })
+      .then((clientList) => {
+        for (const client of clientList) {
+          if (
+            client.url === `${self.location.origin}/video/${videoId}` &&
+            "navigate" in client
+          ) {
+            client.focus();
+            return client.navigate(`${self.location.origin}/video/${videoId}`);
+          }
+        }
+        if (clients.openWindow)
+          return clients
+            .openWindow(`${self.location.origin}/video/${event.data.videoId}`)
+            .then((client) => (client ? client.focus() : null));
+      })
   );
 });

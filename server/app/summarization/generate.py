@@ -1,20 +1,9 @@
 import os
 from typing import TypedDict
 
-from dotenv import load_dotenv
 from huggingface_hub import InferenceClient
 
-load_dotenv()
-models = {
-    "mistral": "mistralai/Mixtral-8x7B-Instruct-v0.1",
-    "phi": "microsoft/phi-2",
-    "orca": "microsoft/Orca-2-13b",
-    "olmo": "allenai/OLMo-7B",
-    "falcon_sum": "Falconsai/text_summarization",
-}
-
-model_id = models["mistral"]
-client = InferenceClient(model_id, token=os.environ.get("HF_API_KEY"))
+from .model import models
 
 
 class SummaryResult(TypedDict):
@@ -22,7 +11,13 @@ class SummaryResult(TypedDict):
     system_prompt: str
 
 
-def summarize(text: str) -> SummaryResult:
+# TODO: WORK ON THE SUMMARY MODULE
+def summarize(text: str, model: str | None) -> SummaryResult:
+    if model is None:
+        model = "mistral"
+    model_id = models[model]
+    client = InferenceClient(model_id, token=os.environ.get("HF_API_KEY"))
+
     system_prompt = """
     ### Instruction ###
     Summarize the video material transcription delimited by triple backquotes.

@@ -2,7 +2,7 @@ FROM node:20-alpine
 WORKDIR /code
 
 COPY package*json ./
-RUN npm ci
+RUN npm install
 
 COPY ./ /code/
 

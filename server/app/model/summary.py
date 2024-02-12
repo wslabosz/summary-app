@@ -12,7 +12,6 @@ class Summary(BaseModel):
     date_created: datetime = datetime.now()
     system_prompt: str
     summary: str
-    model: str
     video_title: str
 
 
@@ -23,11 +22,28 @@ def store_summary(
         record = Summary(
             system_prompt=system_prompt,
             summary=summary,
-            model=model,
             video_title=video_title,
         ).model_dump(mode="json")
-        ref = db.reference(f"summaries/{video_id}")
+        ref = db.reference(f"summaries/{video_id}/{model}")
         ref.set(record)
         return record
     except Exception as e:
         raise StoreSummaryError(f"{e}: during store_summary")
+
+
+def retrieve_summary(
+    video_id: str, model: str | None
+) -> dict[str, datetime | str] | None:
+    if model is None:
+        model = "mistral"
+    record = db.reference(f"summaries/{video_id}/{model}").get()
+    if record is None:
+        return None
+    else:
+        return {
+            "dateCreated": record["date_created"],
+            "summary": record["summary"],
+            "videoTitle": record["video_title"],
+            "videoId": video_id,
+            "model": model,
+        }
