@@ -19,13 +19,22 @@ class InferenceModel:
             config_overrides (dict, optional): A dictionary of options to override the default model configuration. Defaults to None.
         """
         self.model_name = model_name
+        model = models[model_name]
         self.client = InferenceClient(
-            models[model_name]["id"], token=os.environ.get("HF_API_KEY")
+            model=model["id"],
+            token=os.environ.get("HF_API_KEY"),
+            timeout=20,
         )
+        self.type = model["type"]
+        if self.type == "text-generation":
+            self.system_prompt = model["system_prompt"]
+            self.prompt_template = model["prompt_template"]
 
-        self.system_prompt = models[model_name]["system_prompt"]
-        self.prompt_template = models[model_name]["prompt_template"]
-        self.config = models[model_name]["config"]
+        self.config = model["config"]
+        self.options = {
+            "use_cache": True,
+            "wait_for_model": True,
+        }
         if config_overrides:
             for key, value in config_overrides.items():
                 setattr(self.config, key, value)
@@ -35,13 +44,13 @@ class InferenceModel:
         Args:
         Returns:
         """
-        if self.model_name == "falcon":
+        if self.type == "text-summarization":
             return (
-                self.client.text_generation(
-                    self.prompt_template(self.system_prompt, input_prompt),
-                    **self.config,
+                self.client.summarization(
+                    input_prompt,
+                    parameters=self.config,
                 ),
-                self.prompt_template(self.systemprompt, "<transcription>"),
+                "text-summarization",
             )
         return (
             self.client.text_generation(
